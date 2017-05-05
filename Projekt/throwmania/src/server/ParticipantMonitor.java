@@ -32,10 +32,4 @@ public class ParticipantMonitor {
 			}
 		}
 	}
-
-	public synchronized void sendParticipantInfo(Participant p) {
-		for(Participant other:participants){
-			p.sendMessage("J: "+other.getParticipantId());
-		}
-	}
 }

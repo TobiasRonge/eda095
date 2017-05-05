@@ -7,11 +7,13 @@ public class Game {
 	
 	public static byte BULLET_COUNTER = 0;
 	
-	float x,y;
-	boolean keyUp = false;
-	boolean keyDown = false;
-	boolean keyLeft = false;
-	boolean keyRight = false;
+	private float x,y;
+	private boolean keyUp = false;
+	private boolean keyDown = false;
+	private boolean keyLeft = false;
+	private boolean keyRight = false;
+	private boolean done = false;
+
 	private SharedData data;
 	private Mailbox m;
 	private InputThread it;
@@ -40,6 +42,10 @@ public class Game {
 			Bullet b = new Bullet(x,y,(float)a);
 			data.addBullet(b);
 		}
+	}
+	
+	public void chat(String msg){
+		m.putLine("C:"+msg);
 	}
 	
 	public float getX(){
@@ -83,10 +89,9 @@ public class Game {
 	}
 	
 	public void run(){
-		boolean done = false;
 		while(!done){
 			try {
-				Thread.sleep(1000/20);
+				Thread.sleep(1000/30);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -127,7 +132,7 @@ public class Game {
 			this.x = x;
 			this.y = y;
 			this.a = a;
-			id = BULLET_COUNTER++;
+			id = BULLET_COUNTER = (byte) ((BULLET_COUNTER + 1) % 256);
 		}
 		
 		public boolean update(){
@@ -144,6 +149,7 @@ public class Game {
 	}
 
 	public void quit() {
+		done = true;
 		m.putLine("Q");
 		it.close();
 		ot.close();

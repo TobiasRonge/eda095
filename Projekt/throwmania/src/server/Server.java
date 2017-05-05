@@ -24,16 +24,15 @@ public class Server {
 			
 			while(i<=4){
 				Socket s = ss.accept();
-				String name = "Player " + (i++);
-				s.getOutputStream().write((int)(i-1));
+				String name = "Player " + i;
+				s.getOutputStream().write((int)i);
 				s.getOutputStream().flush();
 				m.writeString("C: "+name+" has joined the game.");
-				
-				m.writeString("J: "+(i-1));
+				m.writeString("J: "+i);
 				Participant p = new Participant((byte)(i-1),name,s,m,pm,data);
-				pm.sendParticipantInfo(p);
+				data.sendParticipantInfo(p);
 				pm.addParticipant(p);
-				
+				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

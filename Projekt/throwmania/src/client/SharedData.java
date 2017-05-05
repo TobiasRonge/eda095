@@ -3,10 +3,16 @@ package client;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
+
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 import client.Game.Bullet;
 
@@ -18,6 +24,8 @@ public class SharedData {
 	private HashMap<Byte,Float> other_y;
 	private HashMap<Integer,Float> bullet_x;
 	private HashMap<Integer,Float> bullet_y;
+	
+	private BufferedImage img_ufo1, img_ufo2, img_ufo3, img_ufo4;
 	
 	private Stack<String> chatMessages;
 	
@@ -38,7 +46,17 @@ public class SharedData {
 		other_y.put(id, (float)350);
 		ownId = id;
 		chatMessages = new Stack<String>();
+		chatMessages.push("Press ESCAPE to quit");
 		this.m = m;
+		try {
+			img_ufo1 = ImageIO.read(new File("bin/client/ufo1.png"));
+			img_ufo2 = ImageIO.read(new File("bin/client/ufo2.png"));
+			img_ufo3 = ImageIO.read(new File("bin/client/ufo3.png"));
+			img_ufo4 = ImageIO.read(new File("bin/client/ufo4.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public float getX(){
@@ -50,7 +68,7 @@ public class SharedData {
 	}
 	
 	
-	public synchronized void drawOtherPlayers(Graphics g){
+	public synchronized void drawOtherPlayers(Graphics g,JPanel obs){
 		Iterator<Byte> itr = other_x.keySet().iterator();
 		while(itr.hasNext()){
 			byte id = itr.next();
@@ -59,18 +77,22 @@ public class SharedData {
 			switch (id){
 			case 1:
 				g.setColor(Color.BLUE);
+				g.drawImage(img_ufo1,1024-700-50+(int)x-32,34+(int)y-10,64,20,obs);
 				break;
 			case 2:
 				g.setColor(Color.RED);
+				g.drawImage(img_ufo2,1024-700-50+(int)x-32,34+(int)y-10,64,20,obs);
 				break;
 			case 3:
 				g.setColor(Color.GREEN);
+				g.drawImage(img_ufo3,1024-700-50+(int)x-32,34+(int)y-10,64,20,obs);
 				break;
 			case 4:
 				g.setColor(Color.YELLOW);
+				g.drawImage(img_ufo4,1024-700-50+(int)x-32,34+(int)y-10,64,20,obs);
 				break;
 			}
-			g.drawRect((1024-700)-50+(int)x-5, 34+(int)y-5, 10, 10);
+			//g.drawRect((1024-700)-50+(int)x-5, 34+(int)y-5, 10, 10);
 		}
 	}
 	

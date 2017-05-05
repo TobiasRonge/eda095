@@ -27,8 +27,7 @@ public class InputThread extends Thread{
 				s = is.readLine();
 				if(s!=null&&!s.equals("")){
 					if(s.charAt(0)=='C'){
-						
-						data.putChatMessage(s);
+						data.putChatMessage(s.substring(2,s.length()));
 					}
 					if(s.charAt(0)=='J'){
 						data.addPlayer((byte)Character.getNumericValue(s.charAt(s.length()-1)));

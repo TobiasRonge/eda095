@@ -29,6 +29,12 @@ public class ServerData {
 		player_y.remove(id);
 	}
 	
+	public synchronized void sendParticipantInfo(Participant p){
+			for(byte id:player_x.keySet()){
+				p.sendMessage("J:"+id);
+			}
+	}
+	
 	public synchronized void updatePlayerPosition(byte id,int x,int y){
 		player_x.put(id, x);
 		player_y.put(id, y);
@@ -69,7 +75,7 @@ public class ServerData {
 				else
 					p_id = 1;
 				if(p_id != id){
-					if(collision(x,y,10,10,bullet_x.get(i),bullet_y.get(i),4,4)){
+					if(collision(x,y,64,20,bullet_x.get(i),bullet_y.get(i),4,4)){
 						System.out.println("Collision between bullet from "+p_id+" and "+id+" i="+i);
 						pm.sendMessageTo(id, "H");
 						bullets.remove((Integer)i);

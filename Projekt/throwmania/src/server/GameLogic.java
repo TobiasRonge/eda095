@@ -11,7 +11,7 @@ public class GameLogic extends Thread{
 	public void run(){
 		while(!done){
 			try {
-				Thread.sleep(1000/20);
+				Thread.sleep(1000/30);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

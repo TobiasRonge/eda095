@@ -21,19 +21,23 @@ public class GUI extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 982728831872124279L;
-	myPanel p;
+	MenuPanel p;
 	GamePanel gp;
 	Game game;
 	SharedData data;
 	
 	public GUI(Game g,SharedData data){
+		
+		this.setUndecorated(true);
 		this.setSize(1024,768);
 		this.setVisible(true);
-		p = new myPanel(this);
+		p = new MenuPanel(this);
 		this.addKeyListener(p);
 		this.data = data;
 		add(p);
+		//this.setUndecorated(true);
 		this.game=g;		
+		repaint();
 	}
 	
 	public void startGame(){
@@ -54,6 +58,9 @@ public class GUI extends JFrame{
 		private static final long serialVersionUID = -2407442322401146721L;
 		private GUI parent;
 		private BufferedImage img_bg;
+		private BufferedImage img_ui;
+		private boolean chatting = false;
+		private String chatMessage = "";
 		
 		public GamePanel(GUI parent){
 			this.setSize(1024,768);
@@ -62,6 +69,7 @@ public class GUI extends JFrame{
 			
 			try {
 				img_bg = ImageIO.read(new File("bin/client/bg.png"));
+				img_ui = ImageIO.read(new File("bin/client/ui.jpg"));
 			} catch (IOException e) {
 				e.printStackTrace();
 				
@@ -71,61 +79,80 @@ public class GUI extends JFrame{
 		@Override
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
+			g.drawImage(img_ui, 0, 0, 1024, 768, this);
 			g.setColor(Color.BLUE);
 			g.drawRect((1024-700)-50, 34, 700, 700);
 			g.drawImage(img_bg, 1024-700-50, 34, 700,700,this);
 			
-			data.drawOtherPlayers(g);
+			data.drawOtherPlayers(g,this);
 			data.drawBullets(g);
 			
 			g.setColor(Color.RED);
+			if(chatting){
+				g.drawChars((chatMessage+"|").toCharArray(), 0, chatMessage.length()+1, 20, 668);
+			}
+			
 			g.drawRect(0, 0, 200, 20);
 			g.fillRect(0, 0, data.getHealth()*2, 20);
 			
 			data.drawChatMessages(g);
-			/*String s = data.getChatMessage();
-			if(!s.equals("")){
-				g.setFont(f);
-				g.setColor(Color.RED);
-				g.drawChars(s.toCharArray(), 0, s.length(), 0,100);
-			}*/
+
 			g.dispose();
 			repaint();
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e) {
-			if(e.getKeyCode()==KeyEvent.VK_UP){
-				game.pressedUp();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_DOWN){
-				game.pressedDown();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_LEFT){
-				game.pressedLeft();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-				game.pressedRight();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
-				game.quit();
-				parent.dispose();
+			if(chatting){
+				if(e.getKeyCode()==KeyEvent.VK_BACK_SPACE){
+					if(chatMessage.length()>0){
+						chatMessage = chatMessage.substring(0, chatMessage.length()-1);
+					}
+				} else if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					game.chat(chatMessage);
+					chatMessage = "";
+					chatting = false;
+				} else if(e.getKeyChar()!=KeyEvent.CHAR_UNDEFINED){
+					chatMessage = chatMessage + Character.toString(e.getKeyChar());
+				} 
+			} else {
+				if(e.getKeyCode()==KeyEvent.VK_UP){
+					game.pressedUp();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_DOWN){
+					game.pressedDown();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_LEFT){
+					game.pressedLeft();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+					game.pressedRight();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
+					game.quit();
+					parent.dispose();
+				}
+				if(e.getKeyChar()=='t'){
+					chatting = true;
+				}
 			}
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e) {
-			if(e.getKeyCode()==KeyEvent.VK_UP){
-				game.releasedUp();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_DOWN){
-				game.releasedDown();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_LEFT){
-				game.releasedLeft();
-			}
-			if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-				game.releasedRight();
+			if(!chatting){
+				if(e.getKeyCode()==KeyEvent.VK_UP){
+					game.releasedUp();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_DOWN){
+					game.releasedDown();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_LEFT){
+					game.releasedLeft();
+				}
+				if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+					game.releasedRight();
+				}
 			}
 		}
 
@@ -166,7 +193,7 @@ public class GUI extends JFrame{
 		}
 	}
 	
-	class myPanel extends JPanel implements KeyListener{
+	class MenuPanel extends JPanel implements KeyListener{
 		
 		/**
 		 * 
@@ -177,7 +204,7 @@ public class GUI extends JFrame{
 		char[] s1 = new String("JOIN").toCharArray();
 		char[] s2 = new String("QUIT").toCharArray();
 		BufferedImage img;
-		public myPanel(GUI parent){
+		public MenuPanel(GUI parent){
 			this.setSize(1024,768);
 			this.setVisible(true);
 			this.parent = parent;
@@ -224,6 +251,7 @@ public class GUI extends JFrame{
 			if(e.getKeyCode() == KeyEvent.VK_ENTER && choice)
 				parent.dispose();
 			if(e.getKeyCode() == KeyEvent.VK_ENTER && !choice){
+				parent.removeKeyListener(this);
 				parent.startGame();
 			}
 		}

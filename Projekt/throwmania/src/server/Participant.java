@@ -64,6 +64,9 @@ public class Participant extends Thread{
 					data.killPlayer(Byte.parseByte(message.substring(2, message.length())));
 					m.writeString(message);
 				}
+				if(message.charAt(0)=='C'){
+					m.writeString("C:"+name+": "+message.substring(2,message.length()));
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
