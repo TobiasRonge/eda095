@@ -32,4 +32,10 @@ public class ParticipantMonitor {
 			}
 		}
 	}
+	
+	public void close(){
+		for(Participant p:participants){
+			p.close();
+		}
+	}
 }

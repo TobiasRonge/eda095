@@ -1,6 +1,6 @@
 package server;
 
-public class GameLogic extends Thread{
+public class GameLogic extends Thread {
 	private boolean done = false;
 	private ServerData data;
 	
@@ -16,8 +16,7 @@ public class GameLogic extends Thread{
 				e.printStackTrace();
 			}
 			
-			data.checkCollision();
-			// TODO: Check if player collides with bullets
+			data.checkCollision();		
 		}
 	}
 	

@@ -3,7 +3,7 @@ package client;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Game {
+public class Game extends Thread {
 	
 	public static byte BULLET_COUNTER = 0;
 	
@@ -20,7 +20,7 @@ public class Game {
 	private OutputThread ot;
 	private Socket s;
 	
-	public Game(SharedData data,Mailbox m,Socket s,InputThread it,OutputThread ot){	
+	public Game(SharedData data,Mailbox m,Socket s,InputThread it,OutputThread ot) {
 		this.data = data;
 		this.m = m;
 		this.it = it;
@@ -132,7 +132,8 @@ public class Game {
 			this.x = x;
 			this.y = y;
 			this.a = a;
-			id = BULLET_COUNTER = (byte) ((BULLET_COUNTER + 1) % 256);
+			BULLET_COUNTER = (byte) ((BULLET_COUNTER + 1) % 256);
+			id = BULLET_COUNTER;
 		}
 		
 		public boolean update(){

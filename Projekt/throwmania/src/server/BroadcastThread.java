@@ -4,19 +4,26 @@ public class BroadcastThread extends Thread{
 	
 	private Mailbox m;
 	private ParticipantMonitor pm;
+	private boolean done = false;
 	
 	@Override
 	public void run() {
 		super.run();
 		
-		while(true){
+		while(!done){
 			String s = m.readString();
-			pm.broadcastMessage(s);
+			if(s!=null&&!s.equals(""))
+				pm.broadcastMessage(s);
 		}
 	}
 
 	public BroadcastThread(Mailbox m,ParticipantMonitor pm){
 		this.m = m;
 		this.pm = pm;
+	}
+	
+	public void close(){
+		done = true;
+		m.notifyAll();
 	}
 }

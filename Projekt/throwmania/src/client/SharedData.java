@@ -4,13 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
-
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -49,10 +47,10 @@ public class SharedData {
 		chatMessages.push("Press ESCAPE to quit");
 		this.m = m;
 		try {
-			img_ufo1 = ImageIO.read(new File("bin/client/ufo1.png"));
-			img_ufo2 = ImageIO.read(new File("bin/client/ufo2.png"));
-			img_ufo3 = ImageIO.read(new File("bin/client/ufo3.png"));
-			img_ufo4 = ImageIO.read(new File("bin/client/ufo4.png"));
+			img_ufo1 = ImageIO.read(getClass().getResource("ufo1.png"));
+			img_ufo2 = ImageIO.read(getClass().getResource("ufo2.png"));
+			img_ufo3 = ImageIO.read(getClass().getResource("ufo3.png"));
+			img_ufo4 = ImageIO.read(getClass().getResource("ufo4.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -8,7 +8,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -25,29 +24,34 @@ public class GUI extends JFrame{
 	GamePanel gp;
 	Game game;
 	SharedData data;
+	Client client;
 	
-	public GUI(Game g,SharedData data){
+	public GUI(Client client){
 		
 		this.setUndecorated(true);
 		this.setSize(1024,768);
 		this.setVisible(true);
 		p = new MenuPanel(this);
 		this.addKeyListener(p);
-		this.data = data;
 		add(p);
-		//this.setUndecorated(true);
-		this.game=g;		
+		this.client = client;
 		repaint();
+	}
+	
+	public void registerGame(Game g,SharedData data){
+		this.game=g;
+		this.data=data;
+		game.startGame();
 	}
 	
 	public void startGame(){
 		this.remove(p);
+		client.connect();
 		gp = new GamePanel(this);
 		this.add(gp);
 		this.addKeyListener(gp);
 		this.addMouseListener(gp);
 		repaint();
-		game.startGame();
 	}
 	
 	class GamePanel extends JPanel implements KeyListener, MouseListener{
@@ -68,8 +72,8 @@ public class GUI extends JFrame{
 			this.parent = parent;
 			
 			try {
-				img_bg = ImageIO.read(new File("bin/client/bg.png"));
-				img_ui = ImageIO.read(new File("bin/client/ui.jpg"));
+				img_bg = ImageIO.read(getClass().getResource("bg.png"));
+				img_ui = ImageIO.read(getClass().getResource("ui.jpg"));
 			} catch (IOException e) {
 				e.printStackTrace();
 				
@@ -80,8 +84,6 @@ public class GUI extends JFrame{
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(img_ui, 0, 0, 1024, 768, this);
-			g.setColor(Color.BLUE);
-			g.drawRect((1024-700)-50, 34, 700, 700);
 			g.drawImage(img_bg, 1024-700-50, 34, 700,700,this);
 			
 			data.drawOtherPlayers(g,this);
@@ -210,7 +212,7 @@ public class GUI extends JFrame{
 			this.parent = parent;
 			
 			try {
-				img = ImageIO.read(new File("bin/client/markZmanship.png"));
+				img = ImageIO.read(getClass().getResource("markZmanship.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 				

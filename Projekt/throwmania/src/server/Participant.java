@@ -14,6 +14,9 @@ public class Participant extends Thread{
 	private Mailbox m;
 	private ParticipantMonitor pm;
 	private ServerData data;
+	private BufferedReader is;
+	private boolean done = false;
+
 	
 	public Participant(byte id,String name,Socket s,Mailbox m,ParticipantMonitor pm,ServerData data){
 		super();
@@ -30,11 +33,11 @@ public class Participant extends Thread{
 		super.run();
 
 		try {
-			BufferedReader is = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			boolean done = false;
+			is = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			while(!done){
 				
 				String message = is.readLine();
+				if(message!=null&&!message.equals("")){
 				if(message.charAt(0)=='Q'){
 					pm.removeParticipant(this);	
 					m.writeString("C: "+name+" has left the game.");			
@@ -67,7 +70,18 @@ public class Participant extends Thread{
 				if(message.charAt(0)=='C'){
 					m.writeString("C:"+name+": "+message.substring(2,message.length()));
 				}
+				}
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void close(){
+		done = true;
+		is.notifyAll();
+		try {
+			s.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
