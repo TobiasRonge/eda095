@@ -104,32 +104,23 @@ public class Server extends JFrame{
 			if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
 				try {
 					ss.close();
-					
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				gl.close();
 				bt.close();
 				pm.close();
-				
-				
-				
+						
 				parent.dispose();
-
 			}
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
+		public void keyReleased(KeyEvent e) {			
 		}
 
 		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
+		public void keyTyped(KeyEvent e) {			
 		}
 	}
 }

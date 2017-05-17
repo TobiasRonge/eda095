@@ -18,14 +18,18 @@ public class SharedData {
 	
 	private static final String WON_STRING ="YOU HAVE WON!";
 	private static final String LOST_STRING = "YOU HAVE LOST";
+	private static final String NOTREADY_STRING = "Press ENTER to start new game";
+	private static final String READY_STRING = "Waiting for other players...";
 	
 	private Font f = new Font("Verdana", Font.PLAIN, 10);
 	private Font f_outcome = new Font("Courier",Font.BOLD,26);
+	private Font f_outcomeSmall = new Font("Courier",Font.PLAIN,14);
 	
 	private ArrayList<Bullet> bullets;
 	
 	private HashMap<Byte,Float> other_x;
 	private HashMap<Byte,Float> other_y;
+	private float oldX,oldY;
 	private HashMap<Integer,Float> bullet_x;
 	private HashMap<Integer,Float> bullet_y;
 	
@@ -41,6 +45,8 @@ public class SharedData {
 	
 	private boolean won = false;
 	private boolean lost = false;
+	
+	private boolean ready = false;
 	
 	private byte health = 100;
 	
@@ -133,6 +139,15 @@ public class SharedData {
 			g.setColor(new Color(255,0,0));
 			g.drawChars(LOST_STRING.toCharArray(), 0, LOST_STRING.length(),512-g.getFontMetrics().stringWidth(LOST_STRING)/2, g.getFontMetrics().getHeight()+768/2);
 		}
+		if(won||lost){
+			g.setFont(f_outcomeSmall);
+			g.setColor(Color.WHITE);
+			if(!ready){
+				g.drawChars(NOTREADY_STRING.toCharArray(), 0, NOTREADY_STRING.length(), 512-g.getFontMetrics().stringWidth(NOTREADY_STRING)/2, g.getFontMetrics().getHeight()+768/2+32);
+			} else {
+				g.drawChars(READY_STRING.toCharArray(), 0, READY_STRING.length(), 512-g.getFontMetrics().stringWidth(READY_STRING)/2, g.getFontMetrics().getHeight()+768/2+32);
+			}
+		}
 	}
 	
 	public synchronized void takeDamage(byte damage){
@@ -141,6 +156,8 @@ public class SharedData {
 			health = 0;
 			m.putLine("D:"+ownId);
 			dead = true;
+			oldX = other_x.get(ownId);
+			oldY = other_y.get(ownId);
 		}
 	}
 	
@@ -245,8 +262,46 @@ public class SharedData {
 			}
 		}
 	}
+	
+	public synchronized void removePlayer(byte id){
+			other_x.remove(id);
+			other_y.remove(id);
+			putChatMessage("Player "+id+" died");
+			if(other_x.size()==1&&!lost&&!won){
+				putChatMessage("Player "+other_x.keySet().iterator().next()+" has won the game!");
+				if(other_x.keySet().iterator().next()==ownId){
+					won = true;
+					g.win();
+				} else {
+					lost = true;
+				}
+			}
+		}
 
 	public void registerGame(Game game) {
 		g = game;
+	}
+
+	public void pressedEnter() {
+		if((won||lost)&&!ready){
+			ready = true;
+			m.putLine("R");
+		}
+	}
+
+	public void resetGame() {
+		ready = false;
+		won = false;
+		lost = false;
+		bullet_x.clear();
+		bullet_y.clear();
+		bullets.clear();
+		health = 100;
+		if(dead){
+			other_x.put(ownId, oldX);
+			other_y.put(ownId, oldY);
+		}
+		dead = false;
+		g.reset();
 	}
 }

@@ -11,6 +11,7 @@ public class ServerData {
 	private HashMap<Integer,Integer> bullet_x;
 	private HashMap<Integer,Integer> bullet_y;
 	private ArrayList<Integer> bullets;
+	private HashMap<Byte,Boolean> ready;
 	private ParticipantMonitor pm;
 	private Mailbox m;
 	
@@ -20,8 +21,21 @@ public class ServerData {
 		bullet_x = new HashMap<Integer,Integer>();
 		bullet_y = new HashMap<Integer,Integer>();
 		bullets = new ArrayList<Integer>();
+		ready = new HashMap<Byte,Boolean>();
 		this.pm = pm;
 		this.m = m;
+	}
+	
+	public synchronized void ready(byte id){
+		ready.put(id, true);
+		if(ready.size()==pm.getNumberOfPlayers()){
+			bullet_x.clear();
+			bullet_y.clear();
+			bullets.clear();
+			ready.clear();
+			m.writeString("R");
+			
+		}
 	}
 	
 	public synchronized void killPlayer(byte id){

@@ -24,6 +24,10 @@ public class ParticipantMonitor {
 		}
 	}
 	
+	public synchronized int getNumberOfPlayers(){
+		return participants.size();
+	}
+	
 	public synchronized void sendMessageTo(byte id,String m){
 		for(Participant p:participants){
 			if(p.getParticipantId()==id){

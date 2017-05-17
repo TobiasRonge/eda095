@@ -44,6 +44,11 @@ public class InputThread extends Thread{
 						int y = Integer.parseInt(s.substring(commaIndex+3,s.length()));
 						data.updatePlayerPositions((byte)Character.getNumericValue(s.charAt(0)),x,y);
 					}
+					
+					// Reset game
+					if(s.charAt(0)=='R'){
+						data.resetGame();
+					}
 					if(s.charAt(0)=='B'){
 						if(s.charAt(1)=='A'){
 							String[] subs = s.split(",");
@@ -82,6 +87,7 @@ public class InputThread extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 			data.putChatMessage("Connection problems!");
+			System.out.println("Connection problems!");
 		}
 		
 	}

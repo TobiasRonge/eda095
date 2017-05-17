@@ -65,6 +65,9 @@ public class Participant extends Thread{
 						m.writeString(message);
 					}
 				}
+				if(message.charAt(0)=='R'){
+					data.ready(id);
+				}
 				if(message.charAt(0)=='D'){
 					data.killPlayer(Byte.parseByte(message.substring(2, message.length())));
 					m.writeString(message);

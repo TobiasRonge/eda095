@@ -1,18 +1,7 @@
 package client;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer.Info;
-import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Game extends Thread {
 	
@@ -57,7 +46,8 @@ public class Game extends Thread {
 				a += Math.PI;
 			Bullet b = new Bullet(x,y,(float)a);
 			data.addBullet(b);
-			at.playSound("bin/client/shoot.wav",false);
+			//at.playSound("bin/client/shoot.wav",false);
+			//at.playShootSound();
 		}
 	}
 	
@@ -66,7 +56,8 @@ public class Game extends Thread {
 	}
 	
 	public void otherShoot(){
-		at.playSound("bin/client/shoot.wav", false);
+		//at.playSound("bin/client/shoot.wav", false);
+		at.playShootSound();
 	}
 	
 	public void chat(String msg){
@@ -176,8 +167,8 @@ public class Game extends Thread {
 
 	public void quit() {
 		done = true;
-		m.putLine("Q");
 		it.close();
+		m.putLine("Q");
 		at.close();
 		//try {
 		//	s.close();
@@ -193,5 +184,13 @@ public class Game extends Thread {
 			e.printStackTrace();
 		}
 		System.out.println("Shutting down socket");
+	}
+
+	public void pressedEnter() {
+		data.pressedEnter();
+	}
+	
+	public void reset(){
+		at.startBackgroundMusic();
 	}
 }

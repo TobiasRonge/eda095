@@ -138,6 +138,9 @@ public class GUI extends JFrame{
 				if(e.getKeyChar()=='t'){
 					chatting = true;
 				}
+				if(e.getKeyCode()==KeyEvent.VK_ENTER){
+					game.pressedEnter();
+				}
 			}
 		}
 
