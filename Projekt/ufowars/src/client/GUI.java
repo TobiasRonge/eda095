@@ -216,7 +216,7 @@ public class GUI extends JFrame{
 			this.parent = parent;
 			
 			try {
-				img = ImageIO.read(getClass().getResource("markZmanship.png"));
+				img = ImageIO.read(getClass().getResource("title.png"));
 			} catch (IOException e) {
 				e.printStackTrace();
 				
