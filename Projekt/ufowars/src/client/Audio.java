@@ -1,7 +1,8 @@
 package client;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Vector;
 
 import javax.sound.sampled.AudioFormat;
@@ -28,8 +29,13 @@ public class Audio{
 	public void loadShootSound(){
 		AudioInputStream audioStream;
 		try {
-			audioStream = AudioSystem.getAudioInputStream(new File("bin/client/shoot.wav"));
-		
+			
+            java.net.URL streamURL = this.getClass().getResource( "shoot.wav" );
+			InputStream is = new BufferedInputStream(streamURL.openStream());
+			//audioStream = AudioSystem.getAudioInputStream(this.getClass().getResource("shoot.wav"));
+			audioStream = AudioSystem.getAudioInputStream(is);
+
+			
 			AudioFormat format2 = audioStream.getFormat();
 			
 			int size = (int) (audioStream.getFrameLength()*format2.getFrameSize());
@@ -51,7 +57,10 @@ public class Audio{
 
 	public Clip playSound(String fileUrl,boolean loop){
 		try {
-			AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(fileUrl));
+			java.net.URL streamURL = this.getClass().getResource(fileUrl);
+			InputStream is = new BufferedInputStream(streamURL.openStream());
+			AudioInputStream audioStream = AudioSystem.getAudioInputStream(is);
+			//AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.getClass().getResource(fileUrl));
 			AudioFormat format2 = audioStream.getFormat();
 			
 			int size = (int) (audioStream.getFrameLength()*format2.getFrameSize());
@@ -83,12 +92,12 @@ public class Audio{
 		if(bg_win!=null){
 			bg_win.close();
 		}
-		bg = playSound("bin/client/music.wav",true);
+		bg = playSound("music.wav",true);
 	}
 	
 	public void startWinMusic(){
 		bg.close();
-		bg_win = playSound("bin/client/win.wav",true);
+		bg_win = playSound("win.wav",true);
 	}
 	
 	public void playShootSound(){
